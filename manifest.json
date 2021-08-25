@@ -1,0 +1,18 @@
+{
+    "manifest_version": 2,
+    "name": "tojich",
+    "version": "1.0",
+    "icons":{
+        "16": "images/icon16.png",
+        "32": "images/icon32.png",
+        "64": "images/icon64.png"
+    },
+    "description": "a simple extension",
+    "browser_action": {
+        "default_icon": "images/icon16.png",
+        "default_popup": "popup.html",
+        "default_title": "project title"
+    },
+    "permissions": ["tabs", "https://pocinex.net/index"],
+    "content_security_policy": "script-src 'self' https://unpkg.com/axios/dist/axios.min.js; object-src 'self'"
+}
