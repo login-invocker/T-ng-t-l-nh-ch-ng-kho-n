@@ -29,12 +29,21 @@ async function goToActivityTab() {
             pocinex.setDemoBalance(response.d.demoBalance)
             pocinex.addListMoneyMagic(pocinex.demoBalance)
             const countElemtnt = pocinex.getListMoneyMagic().length
+            console.log(pocinex.getListMoneyMagic())
+            if (countElemtnt > 2 &&
+              (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2]) &&
+              (pocinex.getListMoneyMagic()[countElemtnt - 2] < pocinex.getListMoneyMagic()[countElemtnt - 3]) &&
+              (pocinex.getListMoneyMagic()[countElemtnt - 3] < pocinex.getListMoneyMagic()[countElemtnt - 4])) {
 
-            if (countElemtnt > 2 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2]) && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 0])) {
               train.setBetAmountMulti(train.getListMagic()[2])
             }
-            else if (countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2])) {
+            else if (countElemtnt > 2 &&
+              (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2]) &&
+              (pocinex.getListMoneyMagic()[countElemtnt - 2] < pocinex.getListMoneyMagic()[countElemtnt - 3])) {
               train.setBetAmountMulti(train.getListMagic()[1])
+            }
+            else if (countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2])) {
+              train.setBetAmountMulti(train.getListMagic()[0])
             }
             else if (countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] > pocinex.getListMoneyMagic()[countElemtnt - 2])) {
               train.setBetAmount(train.getMoneyStart())
@@ -108,7 +117,7 @@ var Pocinex = class {
   getDemoBalance() { return this.demoBalance; }
 
   addListMoneyMagic(moneyMagic) {
-    if (this.listMoneyMagic.length == 3) this.listMoneyMagic.shift()
+    if (this.listMoneyMagic.length >= 4) this.listMoneyMagic.shift()
     this.listMoneyMagic.push(moneyMagic)
   }
   getListMoneyMagic() { return this.listMoneyMagic }
