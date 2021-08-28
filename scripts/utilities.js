@@ -6,10 +6,10 @@ async function goToActivityTab() {
   const config = { attributes: true, childList: true, subtree: true };
   let train = new Train(10)
   let pocinex = new Pocinex(JSON.parse(localStorage.getItem('USER_TOKEN')))
-
+  // train.setListMagicFromStore()
   // Callback function to execute when mutations are observed
   const callbackMutationObserver = async function (mutationsList, observer) {
-    
+
     // Use traditional 'for loops' for IE 11
     for (const mutation of mutationsList) {
       if (mutation.type === 'childList') {
@@ -21,15 +21,25 @@ async function goToActivityTab() {
           if (!activityTab.disabled) {
             const userToken = JSON.parse(localStorage.getItem('USER_TOKEN'));
             pocinex.setToken(userToken);
+            const listMagic = await train.getListMagicFromStore()
+            const listMagicMap = listMagic.key.map(x => +x);
+            train.setListMagic(listMagicMap)
 
             const response = await pocinex.fetchSpotBalance()
             pocinex.setDemoBalance(response.d.demoBalance)
             pocinex.addListMoneyMagic(pocinex.demoBalance)
             const countElemtnt = pocinex.getListMoneyMagic().length
-            if( countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2])){
 
-              train.setBetAmountMulti(2)
+            if (countElemtnt > 2 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2]) && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 0])) {
+              train.setBetAmountMulti(train.getListMagic()[2])
             }
+            else if (countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] < pocinex.getListMoneyMagic()[countElemtnt - 2])) {
+              train.setBetAmountMulti(train.getListMagic()[1])
+            }
+            else if (countElemtnt > 1 && (pocinex.getListMoneyMagic()[countElemtnt - 1] > pocinex.getListMoneyMagic()[countElemtnt - 2])) {
+              train.setBetAmount(train.getMoneyStart())
+            }
+
             dat_lenh({
               betAccountType: "DEMO",
               betAmount: train.getBetAmount(),
@@ -70,7 +80,7 @@ var dat_lenh = ({ betAccountType, betAmount, betType, token }) => {
 
   fetch("https://pocinex.net/api/wallet/binaryoption/bet", requestOptions)
     .then(response => response.text())
-    .then(result => {}
+    .then(result => { }
       // console.log(result)
     )
     .catch(error => console.log('error', error));
@@ -78,7 +88,7 @@ var dat_lenh = ({ betAccountType, betAmount, betType, token }) => {
 
 // 
 var Pocinex = class {
-  constructor(token){
+  constructor(token) {
     this.demoBalance = 0;
     this.listMoneyMagic = [];
     this.token = token;
@@ -90,20 +100,20 @@ var Pocinex = class {
     };
     // this.setDemoBalance()
   }
-  
-  setToken(token){ this.token = token;}
-  gettoken(){ return this.token;}
 
-  setDemoBalance(demoBalance){ this.demoBalance = demoBalance }
-  getDemoBalance(){ return this.demoBalance; }
-  
-  addListMoneyMagic(moneyMagic){ 
-    if(this.listMoneyMagic.length == 3 ) this.listMoneyMagic.shift()
+  setToken(token) { this.token = token; }
+  gettoken() { return this.token; }
+
+  setDemoBalance(demoBalance) { this.demoBalance = demoBalance }
+  getDemoBalance() { return this.demoBalance; }
+
+  addListMoneyMagic(moneyMagic) {
+    if (this.listMoneyMagic.length == 3) this.listMoneyMagic.shift()
     this.listMoneyMagic.push(moneyMagic)
   }
-  getListMoneyMagic(){ return this.listMoneyMagic}
-  
-  async fetchSpotBalance(){
+  getListMoneyMagic() { return this.listMoneyMagic }
+
+  async fetchSpotBalance() {
     const data = {
       url: this.url + this.routes.spotBalance,
       method: 'get',
@@ -119,18 +129,33 @@ var Train = class {
   constructor(moneyStart) {
     this.moneyStart = moneyStart;
     this.betAmount = moneyStart
-    this.listMagic = [1,1,1,1]
+    this.listMagic = [1, 1, 1]
   }
 
-  setListMagic(){
-    chrome.storage.sync.get(['key'], function(result) {
-      const resultMap = result.split(',').map(x=>+x);
-      this.listMagic = resultMap;
+  getMoneyStart() { return this.moneyStart; }
+
+
+  setListMagic(listMagic) { this.listMagic = listMagic; }
+  getListMagicFromStore() {
+    // Immediately return a promise and start asynchronous work
+    return new Promise((resolve, reject) => {
+      // Asynchronously fetch all data from storage.sync.
+      chrome.storage.sync.get(null, (items) => {
+        // Pass any observed errors down the promise chain.
+        if (chrome.runtime.lastError) {
+          return reject(chrome.runtime.lastError);
+        }
+        // Pass the data retrieved from storage down the promise chain.
+        resolve(items);
+      });
     });
   }
-  getListMagic(){return this.listMagic;}
+  getListMagic() {
+    // console.log(this.listMagic)
+    return this.listMagic;
+  }
 
-  
+
   setBetAmountMulti(amountMultiplier) {
     this.betAmount = this.betAmount * amountMultiplier
   }
@@ -140,11 +165,11 @@ var Train = class {
   setNextBetMultiplier(listBetAmountMultiplier) {
     this.listBetAmountMultiplier = listBetAmountMultiplier
   }
-  setNextBetMultiplier() {return this.listBetAmountMultiplier}
+  setNextBetMultiplier() { return this.listBetAmountMultiplier }
 }
 
 // axios
-var axios = async ({url, method, token, body}) => {
+var axios = async ({ url, method, token, body }) => {
   var headers = new Headers();
   headers.append("Authorization", `Bearer ${token.access_token}`);
   headers.append("Content-Type", "application/json");

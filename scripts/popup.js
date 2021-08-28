@@ -11,15 +11,13 @@ function setupData(){
   const loss1 = document.getElementById("loss1").value;
   const loss2 = document.getElementById("loss2").value;
   const loss3 = document.getElementById("loss3").value;
-  const loss4 = document.getElementById("loss4").value;
-  console.log($)
+  // const loss4 = document.getElementById("loss4").value;
 
   // chrome.storage.sync.set({listMoneyMagic: [ 2, 4]}, function() {
   //   // console.log('Value is set to ' + loss1);
   // });
-  chrome.storage.sync.set({key: [ loss1, loss2, loss3, loss4]}, function() {
-    console.log('Value is set to ' + [ loss1, loss2, loss3, loss4]);
-    // $.notify("Access granted", "success");
+  chrome.storage.sync.set({key: [ loss1, loss2, loss3]}, function() {
+    console.log('Value is set to ' + [ loss1, loss2, loss3]);
   });
 }
 // adding listener to your button in popup window
