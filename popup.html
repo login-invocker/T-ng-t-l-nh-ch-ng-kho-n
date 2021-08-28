@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title>lam</title>
-	<link rel="stylesheet" href="styles/lam.css">
+  <title>lam</title>
+  <link rel="stylesheet" href="styles/lam.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 </head>
+
 <body>
-    <h2 id="htwo">Button presser</h2>
-        <button id="press">Go to activity tab</button>  
-        <script src="popup.js"></script> 
+  <div class="init text-center mb-3">
+    <button type="button" id="init" class="btn btn-success">Start auto</button>
+  </div>
+  <form>
+    <div class="mb-3">
+      <label for="exampleInputEmail1" class="form-label">Loss 1</label>
+      <input type="number" class="form-control" id="loss1" aria-describedby="emailHelp" value="1">
+      <div id="emailHelp" class="form-text">!!</div>
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Loss 2</label>
+      <input type="number" class="form-control" id="loss2" value="1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Loss 3</label>
+      <input type="number" class="form-control" id="loss3" value="1">
+    </div>
+    <div class="mb-3">
+      <label for="exampleInputPassword1" class="form-label">Loss 4</label>
+      <input type="number" class="form-control" id="loss4" value="1">
+    </div>
+    <button type="submit" id="set-up" class="btn btn-primary">Submit</button>
+  </form>
 </body>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-	<script type="text/javascript" src="scripts/lam.js"></script>
+<script type="text/javascript" src="scripts/popup.js"></script>
+
 </html>

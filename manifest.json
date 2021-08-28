@@ -13,6 +13,6 @@
         "default_popup": "popup.html",
         "default_title": "project title"
     },
-    "permissions": ["tabs", "https://pocinex.net/index"],
+    "permissions": ["tabs", "https://pocinex.net/index", "storage"],
     "content_security_policy": "script-src 'self' https://unpkg.com/axios/dist/axios.min.js; object-src 'self'"
 }
